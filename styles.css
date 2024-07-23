@@ -1,0 +1,57 @@
+.radical-tooltip {
+  position: absolute;
+  background: linear-gradient(to bottom, #00AAFF, #0093DD);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  font-size: 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  white-space: nowrap; /* Prevent the tooltip text from wrapping */
+  min-height: 42px;
+  min-width: 45px;
+}
+
+.radical-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Adjust this value to move the arrow closer/further from the tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #0093DD; /* Same color as the tooltip background */
+}
+
+.kanji-tooltip {
+  position: absolute;
+  background: linear-gradient(to bottom, #FF00AA, #DD0093);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  font-size: 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  white-space: nowrap; /* Prevent the tooltip text from wrapping */
+  min-height: 42px;
+  min-width: 45px;
+}
+
+.kanji-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Adjust this value to move the arrow closer/further from the tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #DD0093; /* Same color as the tooltip background */
+}
