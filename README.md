@@ -1,4 +1,4 @@
-==WaniKani Power Tools==
+# WaniKani Power Tools
 
 Chrome extension that extends the functionality of WaniKani.
 
