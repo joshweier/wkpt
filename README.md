@@ -1,3 +1,5 @@
+==WaniKani Power Tools==
+
 Chrome extension that extends the functionality of WaniKani.
 
 Current features:

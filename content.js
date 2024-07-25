@@ -1,19 +1,5 @@
 var data = {};
 
-// Used to check for hour changes for refresh triggers
-let lastIdleDate = null;
-let lastIdleHour = null;
-
-// Update the last interaction time
-function updateLastInteractionTime() {
-    lastInteractionTime = Date.now();
-}
-
-// Add event listeners for user interactions
-document.addEventListener('click', updateLastInteractionTime);
-document.addEventListener('keypress', updateLastInteractionTime);
-document.addEventListener('mousemove', updateLastInteractionTime);
-
 // Check if the tab is visible
 function checkVisibility() {
     if (document.visibilityState === 'visible') {
@@ -21,18 +7,21 @@ function checkVisibility() {
         const currentDate = now.toDateString();
         const currentHour = now.getHours();
 
+        // console.log('Checking visibility...', lastIdleDate, lastIdleHour, currentDate, currentHour);
+        // console.log('Path:', window.location.pathname);
+
         // Only do this if we're sitting at the main screen
         const targetPath = '/dashboard';
-        let timeChanged = (lastCheckedDate !== currentDate || lastCheckedHour !== currentHour);
-        if (timeChanged &&
-            (window.location.pathname === targetPath || window.location.pathname === '/')) {
-            console.log('Page has been idle for too long, reloading...');
+        const timeRecorded = (lastIdleDate && lastIdleHour);
+        const timeChanged = timeRecorded && (lastIdleDate !== currentDate || lastIdleHour !== currentHour);
+        const pathMatches = (window.location.pathname === targetPath || window.location.pathname === '/');
+        if (timeChanged && pathMatches) {
             window.location.reload();
         }
 
         // Update our times
-        lastCheckedDate = currentDate;
-        lastCheckedHour = currentHour
+        lastIdleDate = currentDate;
+        lastIdleHour = currentHour
     }
 }
 
@@ -149,5 +138,13 @@ function observeMutations() {
     });
 }
 
+// Seed our idle time
+const now = new Date();
+let lastIdleDate = now.toDateString();
+let lastIdleHour = now.getHours();
+
+// Watch for changes
 observeMutations();
+
+// Load extra kanji data
 loadData(addTooltipListeners);
