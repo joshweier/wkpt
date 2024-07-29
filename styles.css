@@ -55,3 +55,28 @@
   border-right: 10px solid transparent;
   border-top: 10px solid #DD0093; /* Same color as the tooltip background */
 }
+
+.due-long {
+    border-radius: 5px;
+    overflow: hidden; /* Clip the shadow at the corners */
+    box-shadow: 0 0 1px 5px rgba(64, 64, 64, 0.5);
+}
+
+.due-mid {
+    border-radius: 5px;
+    overflow: hidden; 
+    box-shadow: 0 0 1px 5px rgba(255, 255, 0, 0.5);
+}
+
+/* FIXME: Probably don't need this */
+.due-soon {
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 1px 5px rgba(255, 128, 0, 0.5);
+}
+
+.due-now {
+    border-radius: 5px;
+    overflow: hidden
+    box-shadow: 0 0 1px 5px rgba(255, 0, 0, 0.5);
+}

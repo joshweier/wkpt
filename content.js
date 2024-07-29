@@ -66,6 +66,7 @@ function addTooltipToElement(element, isRadical) {
 
         const rect = element.getBoundingClientRect();
         let name = element.innerText.toLowerCase();
+        name = name.replace(' ', '-');
         let charData = (isRadical) ? data.radicals[name] : data.kanji[name];
 
         // Make sure to handle SVG types
@@ -84,8 +85,62 @@ function addTooltipToElement(element, isRadical) {
 
         // FIXME: This creates some weirdness when the tooltip is removed
         element.addEventListener('mouseout', () => {
-            document.body.removeChild(tooltip);
+             if (tooltip && document.body.contains(tooltip)) {
+                 document.body.removeChild(tooltip);
+             }
         });
+    });
+}
+
+function getDueDateColor(statusText) {
+    const regex = /(\d+)\s*(days|hours|minutes)/i;
+    const match = statusText.match(regex);
+
+    if (match) {
+        const numeral = match[1];
+        const unit = match[2];
+        if (unit === 'days') {
+            return 'due-long';
+        }
+        if (unit === 'hours') {
+            return 'due-mid';
+        }
+        if (unit === 'minutes') {
+            return 'due-soon';
+        }
+    }
+    else {
+        const searchString = 'right now';
+        if (statusText.includes(searchString)) {
+            return 'due-now';
+        }
+
+        return null;
+    }
+}
+
+function decorateDueItem(item){
+    let statusText = item.getAttribute('title');
+    const colorClass = getDueDateColor(statusText);
+    if (colorClass) {
+        // Add the new decoration
+        let child = item.querySelector('.subject-character__content')
+        child.classList.add(colorClass);
+    }
+    else{
+        // Remove any old decorators
+        item.classList.remove(["due-now", "due-soon", "due-mid", "due-long"]);
+    }
+}
+
+function decorateDueItems() {
+    const reviewItems = document.querySelectorAll('a.subject-srs-progress'); 
+    if (reviewItems.length === 0) 
+        return;
+
+    // Loop through each item and add the appropriate decoration
+    reviewItems.forEach((element) => {
+        decorateDueItem(element);
     });
 }
 
@@ -99,10 +154,12 @@ function addTooltipListeners() {
 
     // const kanji = document.querySelectorAll('.kanji-highlight');
     // if (kanji.length > 0) {
-    //     kanji.forEach((kanji) => {
-    //         addTooltipToElement(kanji, false);
-    //     });
-    // } 
+        //     kanji.forEach((kanji) => {
+            //         addTooltipToElement(kanji, false);
+            //     });
+        // } 
+
+    decorateDueItems();
 }
 
 // Use MutationObserver to handle dynamically added elements
@@ -121,13 +178,23 @@ function observeMutations() {
 
                 // NOTE: For the moment kanji are too unreliable to show properly, stick to radicals
                 // if (node.nodeType === 1 && node.classList.contains('kanji-highlight')) {
-                //     addTooltipToElement(node, false);
-                // }
+                    //     addTooltipToElement(node, false);
+                    // }
                 // // If the added node contains child nodes with the class, handle them too
                 // const kanjiElements = node.querySelectorAll ? node.querySelectorAll('.kanji-highlight') : [];
                 // kanjiElements.forEach((kanji) => {
-                //     addTooltipToElement(kanji, false);
-                // });
+                    //     addTooltipToElement(kanji, false);
+                    // });
+
+                if (node.nodeType === 1 && node.classList.contains('a.subject-srs-progress')) {
+                    decorateDueItem(node);
+                }
+
+                // If the added node contains child nodes with the class, handle them too
+                const character = node.querySelectorAll ? node.querySelectorAll('a.subject-srs-progress') : [];
+                character.forEach((element) => {
+                    decorateDueItem(element);
+                });
             });
         });
     });
@@ -143,8 +210,11 @@ const now = new Date();
 let lastIdleDate = now.toDateString();
 let lastIdleHour = now.getHours();
 
-// Watch for changes
-observeMutations();
+window.addEventListener('load', (event) => {
+    // Watch for changes
+    observeMutations();
 
-// Load extra kanji data
-loadData(addTooltipListeners);
+    // Load extra kanji data
+    loadData(addTooltipListeners);
+});
+
