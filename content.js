@@ -86,20 +86,29 @@ function addTooltipToElement(element, isRadical) {
     });
 }
 
-function getDueDateColor(statusText) {
+function getTimeDuration(timeString) {
     const regex = /(\d+)\s*(days|hours|minutes)/i;
-    const match = statusText.match(regex);
-
+    const match = timeString.match(regex);
     if (match) {
-        const numeral = match[1];
-        const unit = match[2];
-        if (unit === 'days') {
+        return {
+            numeral: match[1],
+            unit: match[2]
+        }
+    }
+
+    return null;
+}
+
+function getDueDateColor(statusText) {
+    const match = getTimeDuration(statusText);
+    if (match) {
+        if (match.unit === 'days') {
             return 'due-long';
         }
-        if (unit === 'hours') {
+        if (match.unit === 'hours') {
             return 'due-mid';
         }
-        if (unit === 'minutes') {
+        if (match.unit === 'minutes') {
             return 'due-soon';
         }
     }
@@ -114,7 +123,12 @@ function getDueDateColor(statusText) {
 }
 
 function decorateDueItem(item){
+    // Simplify the status text
     let statusText = item.getAttribute('title');
+    const match = getTimeDuration(statusText);
+    statusText = (match) ? `${match.numeral} ${match.unit}` : statusText;
+    item.setAttribute('title', statusText);
+
     const colorClass = getDueDateColor(statusText);
     if (colorClass) {
         // Add the new decoration
