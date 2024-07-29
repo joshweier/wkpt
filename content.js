@@ -49,14 +49,8 @@ async function fetchAndDisplaySVG(url, element, bounds) {
     element.style.left = `${window.scrollX + bounds.left + (bounds.width / 2) - (element.offsetWidth / 2)}px`;
     element.style.display = 'block';
 
-    // Modify the SVG's fill color to white
-    const svgElement = element.querySelector('svg');
-    if (svgElement) {
-        svgElement.style.fill = 'white';
-        svgElement.querySelectorAll('path').forEach(path => {
-            path.setAttribute('fill', 'white');
-        });
-    }
+    // Override the character color to white
+    element.style.setProperty('--color-text', 'white');
 }
 
 function addTooltipToElement(element, isRadical) {
